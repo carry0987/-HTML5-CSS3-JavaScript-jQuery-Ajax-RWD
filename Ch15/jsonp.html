@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script>	  
+      $(function(){
+	    var dataUrl = "http://opendata.epa.gov.tw/ws/Data/AQFN/?$orderby=PublishTime%20desc&$skip=0&$top=1000&format=json";
+		
+	    $("#forecast").on("click", function(){
+	      $.ajax({
+            url : dataUrl,			//指定資料的網址
+            dataType : "jsonp",		//指定資料的格式
+	        success : onSuccess		//指定當Ajax要求成功時所要執行的函式
+          });
+		});
+	  });	
+		
+      function onSuccess(data){
+	    //清空表格內的資料
+	    $("#airQ").empty();
+		
+		//建立表格的第一列
+	    var firstRow = $("<tr><th>地區</th><th>預報內容</th></tr>");
+	    $("#airQ").append(firstRow);
+		
+		//將取得的資料一一建立為表格的每一列
+		$.each(data, function(i){
+		  var row = $("<tr></tr>");
+		  var td1 = $("<td></td>").text(this.Area).appendTo(row);
+		  var td2 = $("<td></td>").text(this.Content).appendTo(row);
+		  $("#airQ").append(row);
+		});		
+      }	  
+    </script>
+  </head>
+  <body>
+    <button id="forecast">更新空氣品質預報</button><br><br>  
+    <table id="airQ" rules="rows"></table>   
+  </body>
+</html>
